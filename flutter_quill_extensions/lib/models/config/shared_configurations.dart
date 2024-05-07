@@ -3,7 +3,6 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:meta/meta.dart' show immutable;
 
 import '../../services/image_picker/s_image_picker.dart';
-import '../../services/image_saver/s_image_saver.dart';
 
 /// Configurations for Flutter Editor Extensions
 /// shared between toolbar and editor
@@ -11,10 +10,8 @@ import '../../services/image_saver/s_image_saver.dart';
 class QuillSharedExtensionsConfigurations {
   const QuillSharedExtensionsConfigurations({
     ImagePickerService? imagePickerService,
-    ImageSaverService? imageSaverService,
     this.assetsPrefix = 'assets',
-  })  : _imagePickerService = imagePickerService,
-        _imageSaverService = imageSaverService;
+  })  : _imagePickerService = imagePickerService;
 
   /// Get the instance from the widget tree in [QuillSharedConfigurations]
   /// if it doesn't exists, we will create new one with default options
@@ -49,14 +46,6 @@ class QuillSharedExtensionsConfigurations {
     return _imagePickerService ?? ImagePickerService.defaultImpl();
   }
 
-  /// Default to [ImageSaverService.defaultImpl]
-  final ImageSaverService? _imageSaverService;
-
-  /// A getter method which returns the [ImageSaverService] that is provided
-  /// by the developer, if it can't be found then we will use default impl
-  ImageSaverService get imageSaverService {
-    return _imageSaverService ?? ImageSaverService.defaultImpl();
-  }
 
   /// The property [assetsPrefix] should be the start of your assets folder
   /// by default it to `assets` and the reason why we need to know it

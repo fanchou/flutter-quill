@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart' show Color;
 import 'package:flutter_quill/flutter_quill.dart';
 
 class QuillToolbarFormulaButtonExtraOptions
@@ -17,7 +18,10 @@ class QuillToolbarFormulaButtonOptions extends QuillToolbarBaseButtonOptions<
     super.iconTheme,
     super.afterButtonPressed,
     super.childBuilder,
+    this.fillColor,
     super.iconSize,
     super.iconButtonFactor,
   });
+
+  final Color? fillColor;
 }

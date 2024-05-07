@@ -52,9 +52,6 @@ class QuillEditorImageEmbedBuilder extends EmbedBuilder {
           .assetsPrefix,
     );
 
-    final imageSaverService =
-        QuillSharedExtensionsConfigurations.get(context: context)
-            .imageSaverService;
     return GestureDetector(
       onTap: () {
         final onImageClicked = configurations.onImageClicked;
@@ -70,8 +67,7 @@ class QuillEditorImageEmbedBuilder extends EmbedBuilder {
               configurations: configurations,
               imageSource: imageSource,
               imageSize: imageSize,
-              isReadOnly: readOnly,
-              imageSaverService: imageSaverService,
+              isReadOnly: readOnly
             ),
           ),
         );

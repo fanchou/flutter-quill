@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart' show Color;
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:meta/meta.dart' show immutable;
 
@@ -25,10 +26,13 @@ class QuillToolbarImageButtonOptions extends QuillToolbarBaseButtonOptions<
     super.afterButtonPressed,
     super.childBuilder,
     super.iconTheme,
+    this.fillColor,
     this.dialogTheme,
     this.linkRegExp,
     this.imageButtonConfigurations = const QuillToolbarImageConfigurations(),
   });
+
+  final Color? fillColor;
 
   final QuillDialogTheme? dialogTheme;
 

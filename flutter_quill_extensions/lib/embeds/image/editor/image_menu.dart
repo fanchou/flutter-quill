@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart' show showCupertinoModalPopup;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/extensions.dart';
 import 'package:flutter_quill/flutter_quill.dart'
     show ImageUrl, QuillController, StyleAttribute, getEmbedNode;
 import 'package:flutter_quill/translations.dart';
@@ -9,7 +8,6 @@ import 'package:super_clipboard/super_clipboard.dart';
 
 import '../../../models/config/image/editor/image_configurations.dart';
 import '../../../models/config/shared_configurations.dart';
-import '../../../services/image_saver/s_image_saver.dart';
 import '../../../utils/element_utils/element_utils.dart';
 import '../../../utils/string.dart';
 import '../../../utils/utils.dart';
@@ -23,7 +21,6 @@ class ImageOptionsMenu extends StatelessWidget {
     required this.imageSource,
     required this.imageSize,
     required this.isReadOnly,
-    required this.imageSaverService,
     super.key,
   });
 
@@ -32,7 +29,6 @@ class ImageOptionsMenu extends StatelessWidget {
   final String imageSource;
   final ElementSize imageSize;
   final bool isReadOnly;
-  final ImageSaverService imageSaverService;
 
   @override
   Widget build(BuildContext context) {
@@ -134,49 +130,6 @@ class ImageOptionsMenu extends StatelessWidget {
                 );
                 // Call the post remove callback if set
                 await configurations.onImageRemovedCallback.call(imageSource);
-              },
-            ),
-          if (!kIsWeb)
-            ListTile(
-              leading: const Icon(Icons.save),
-              title: Text(context.loc.save),
-              onTap: () async {
-                final messenger = ScaffoldMessenger.of(context);
-                final localizations = context.loc;
-                Navigator.of(context).pop();
-
-                final saveImageResult = await saveImage(
-                  imageUrl: imageSource,
-                  imageSaverService: imageSaverService,
-                );
-                final imageSavedSuccessfully = saveImageResult.error == null;
-
-                messenger.clearSnackBars();
-
-                if (!imageSavedSuccessfully) {
-                  messenger.showSnackBar(SnackBar(
-                      content: Text(
-                    localizations.errorWhileSavingImage,
-                  )));
-                  return;
-                }
-
-                var message = switch (saveImageResult.method) {
-                  SaveImageResultMethod.network =>
-                    localizations.savedUsingTheNetwork,
-                  SaveImageResultMethod.localStorage =>
-                    localizations.savedUsingLocalStorage,
-                };
-
-                if (isDesktop(supportWeb: false)) {
-                  message = localizations.theImageHasBeenSavedAt(imageSource);
-                }
-
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(message),
-                  ),
-                );
               },
             ),
           ListTile(

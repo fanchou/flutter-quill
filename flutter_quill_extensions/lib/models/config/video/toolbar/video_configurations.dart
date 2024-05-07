@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart' show Color;
 import 'package:flutter_quill/flutter_quill.dart';
 
 import '../../../../embeds/video/video.dart';
@@ -16,6 +17,7 @@ class QuillToolbarVideoButtonOptions extends QuillToolbarBaseButtonOptions<
   const QuillToolbarVideoButtonOptions({
     this.linkRegExp,
     this.dialogTheme,
+    this.fillColor,
     super.iconSize,
     super.iconButtonFactor,
     super.iconData,
@@ -29,4 +31,6 @@ class QuillToolbarVideoButtonOptions extends QuillToolbarBaseButtonOptions<
   final RegExp? linkRegExp;
   final QuillDialogTheme? dialogTheme;
   final QuillToolbarVideoConfigurations videoConfigurations;
+
+  final Color? fillColor;
 }
