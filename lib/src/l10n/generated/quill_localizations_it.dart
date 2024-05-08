@@ -222,11 +222,6 @@ class FlutterQuillLocalizationsIt extends FlutterQuillLocalizations {
       'Salvato utilizzando la memorizzazione locale';
 
   @override
-  String theImageHasBeenSavedAt(String imagePath) {
-    return 'The image has been saved at: $imagePath';
-  }
-
-  @override
   String get errorWhileSavingImage =>
       "Errore durante il salvataggio dell'immagine";
 

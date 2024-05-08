@@ -128,7 +128,7 @@ class FlutterQuillLocalizationsKo extends FlutterQuillLocalizations {
   String get alignRight => 'Align right';
 
   @override
-  String get justifyWinWidth => 'Justify';
+  String get justifyWinWidth => 'Justify win width';
 
   @override
   String get textDirection => 'Text direction';
@@ -219,11 +219,6 @@ class FlutterQuillLocalizationsKo extends FlutterQuillLocalizations {
 
   @override
   String get savedUsingLocalStorage => 'Saved using the local storage';
-
-  @override
-  String theImageHasBeenSavedAt(String imagePath) {
-    return 'The image has been saved at: $imagePath';
-  }
 
   @override
   String get errorWhileSavingImage => 'Error while saving image';

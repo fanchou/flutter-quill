@@ -23,14 +23,12 @@ import 'quill_localizations_ja.dart';
 import 'quill_localizations_ko.dart';
 import 'quill_localizations_ku.dart';
 import 'quill_localizations_ms.dart';
-import 'quill_localizations_ne.dart';
 import 'quill_localizations_nl.dart';
 import 'quill_localizations_no.dart';
 import 'quill_localizations_pl.dart';
 import 'quill_localizations_pt.dart';
 import 'quill_localizations_ro.dart';
 import 'quill_localizations_ru.dart';
-import 'quill_localizations_sk.dart';
 import 'quill_localizations_sr.dart';
 import 'quill_localizations_sv.dart';
 import 'quill_localizations_sw.dart';
@@ -146,7 +144,6 @@ abstract class FlutterQuillLocalizations {
     Locale('ku'),
     Locale('ku', 'CKB'),
     Locale('ms'),
-    Locale('ne'),
     Locale('nl'),
     Locale('no'),
     Locale('pl'),
@@ -155,7 +152,6 @@ abstract class FlutterQuillLocalizations {
     Locale('ro'),
     Locale('ro', 'RO'),
     Locale('ru'),
-    Locale('sk'),
     Locale('sr'),
     Locale('sv'),
     Locale('sw'),
@@ -210,18 +206,6 @@ abstract class FlutterQuillLocalizations {
   /// In en, this message translates to:
   /// **'Copy'**
   String get copy;
-
-  /// No description provided for @cut.
-  ///
-  /// In en, this message translates to:
-  /// **'Cut'**
-  String get cut => 'Cut';
-
-  /// No description provided for @paste.
-  ///
-  /// In en, this message translates to:
-  /// **'Paste'**
-  String get paste => 'Paste';
 
   /// No description provided for @remove.
   ///
@@ -613,12 +597,6 @@ abstract class FlutterQuillLocalizations {
   /// **'Saved using the local storage'**
   String get savedUsingLocalStorage;
 
-  /// A message with a single parameter
-  ///
-  /// In en, this message translates to:
-  /// **'The image has been saved at: {imagePath}'**
-  String theImageHasBeenSavedAt(String imagePath);
-
   /// No description provided for @errorWhileSavingImage.
   ///
   /// In en, this message translates to:
@@ -740,14 +718,12 @@ class _FlutterQuillLocalizationsDelegate
         'ko',
         'ku',
         'ms',
-        'ne',
         'nl',
         'no',
         'pl',
         'pt',
         'ro',
         'ru',
-        'sk',
         'sr',
         'sv',
         'sw',
@@ -848,8 +824,6 @@ FlutterQuillLocalizations lookupFlutterQuillLocalizations(Locale locale) {
       return FlutterQuillLocalizationsKu();
     case 'ms':
       return FlutterQuillLocalizationsMs();
-    case 'ne':
-      return FlutterQuillLocalizationsNe();
     case 'nl':
       return FlutterQuillLocalizationsNl();
     case 'no':
@@ -862,8 +836,6 @@ FlutterQuillLocalizations lookupFlutterQuillLocalizations(Locale locale) {
       return FlutterQuillLocalizationsRo();
     case 'ru':
       return FlutterQuillLocalizationsRu();
-    case 'sk':
-      return FlutterQuillLocalizationsSk();
     case 'sr':
       return FlutterQuillLocalizationsSr();
     case 'sv':

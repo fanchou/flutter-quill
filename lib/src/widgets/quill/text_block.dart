@@ -74,7 +74,6 @@ class EditableTextBlock extends StatelessWidget {
     required this.clearIndents,
     required this.onCheckboxTap,
     required this.readOnly,
-    this.checkBoxReadOnly,
     this.onLaunchUrl,
     this.customStyleBuilder,
     this.customLinkPrefixes = const <String>[],
@@ -101,7 +100,6 @@ class EditableTextBlock extends StatelessWidget {
   final bool clearIndents;
   final Function(int, bool) onCheckboxTap;
   final bool readOnly;
-  final bool? checkBoxReadOnly;
   final List<String> customLinkPrefixes;
 
   @override
@@ -281,7 +279,7 @@ class EditableTextBlock extends StatelessWidget {
       return QuillEditorCheckboxPoint(
         size: fontSize,
         value: attrs[Attribute.list.key] == Attribute.checked,
-        enabled: !(checkBoxReadOnly ?? readOnly),
+        enabled: !readOnly,
         onChanged: (checked) => onCheckboxTap(line.documentOffset, checked),
         uiBuilder: defaultStyles.lists?.checkboxUIBuilder,
       );

@@ -26,12 +26,7 @@ class QuillToolbarIconButton extends StatelessWidget {
     if (isSelected) {
       return IconButton.filled(
         tooltip: tooltip,
-        onPressed: onPressed != null
-            ? () {
-                onPressed?.call();
-                afterPressed?.call();
-              }
-            : null,
+        onPressed: onPressed,
         icon: icon,
         style: iconTheme?.iconButtonSelectedData?.style,
         visualDensity: iconTheme?.iconButtonSelectedData?.visualDensity,

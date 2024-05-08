@@ -559,13 +559,10 @@ class PreserveInlineStylesRule extends InsertRule {
     }
 
     final itr = DeltaIterator(document);
-    var prev = itr.skip(len == 0 ? index : index + 1);
+    final prev = itr.skip(len == 0 ? index : index + 1);
     if (prev == null ||
-        (prev.data is String && (prev.data as String).endsWith('\n'))) {
-      prev = itr.next();
-    }
-
-    if (prev.data is! String) {
+        prev.data is! String ||
+        (prev.data as String).contains('\n')) {
       return null;
     }
 

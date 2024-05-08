@@ -221,11 +221,6 @@ class FlutterQuillLocalizationsKu extends FlutterQuillLocalizations {
   String get savedUsingLocalStorage => 'لە ڕێی دیسکی ناوخۆییەوە پاشەکەوتکرا';
 
   @override
-  String theImageHasBeenSavedAt(String imagePath) {
-    return 'The image has been saved at: $imagePath';
-  }
-
-  @override
   String get errorWhileSavingImage => 'هەڵە ڕویدا لە کاتی پاشەکەوتکردنی وێنەدا';
 
   @override

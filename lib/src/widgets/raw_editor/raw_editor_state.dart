@@ -13,15 +13,16 @@ import 'package:flutter/services.dart'
         Clipboard,
         ClipboardData,
         HardwareKeyboard,
-        KeyDownEvent,
         LogicalKeyboardKey,
+        KeyDownEvent,
         SystemChannels,
         TextInputControl;
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart'
     show KeyboardVisibilityController;
-import 'package:super_clipboard/super_clipboard.dart';
+import 'package:html/parser.dart' as html_parser;
 
 import '../../models/documents/attribute.dart';
+import '../../models/documents/delta_x.dart';
 import '../../models/documents/document.dart';
 import '../../models/documents/nodes/block.dart';
 import '../../models/documents/nodes/embeddable.dart';
@@ -90,10 +91,12 @@ class QuillRawEditorState extends EditorState
 
   // for pasting style
   @override
-  List<OffsetValue> get pasteStyleAndEmbed => controller.pasteStyleAndEmbed;
+  List<OffsetValue> get pasteStyleAndEmbed => _pasteStyleAndEmbed;
+  List<OffsetValue> _pasteStyleAndEmbed = <OffsetValue>[];
 
   @override
-  String get pastePlainText => controller.pastePlainText;
+  String get pastePlainText => _pastePlainText;
+  String _pastePlainText = '';
 
   ClipboardStatusNotifier? _clipboardStatus;
   final LayerLink _toolbarLayerLink = LayerLink();
@@ -118,7 +121,16 @@ class QuillRawEditorState extends EditorState
   /// Copy current selection to [Clipboard].
   @override
   void copySelection(SelectionChangedCause cause) {
-    if (!controller.clipboardSelection(true)) return;
+    controller.copiedImageUrl = null;
+    _pastePlainText = controller.getPlainText();
+    _pasteStyleAndEmbed = controller.getAllIndividualSelectionStylesAndEmbed();
+
+    final selection = textEditingValue.selection;
+    final text = textEditingValue.text;
+    if (selection.isCollapsed) {
+      return;
+    }
+    Clipboard.setData(ClipboardData(text: selection.textInside(text)));
 
     if (cause == SelectionChangedCause.toolbar) {
       bringIntoView(textEditingValue.selection.extent);
@@ -139,7 +151,20 @@ class QuillRawEditorState extends EditorState
   /// Cut current selection to [Clipboard].
   @override
   void cutSelection(SelectionChangedCause cause) {
-    if (!controller.clipboardSelection(false)) return;
+    controller.copiedImageUrl = null;
+    _pastePlainText = controller.getPlainText();
+    _pasteStyleAndEmbed = controller.getAllIndividualSelectionStylesAndEmbed();
+
+    if (widget.configurations.readOnly) {
+      return;
+    }
+    final selection = textEditingValue.selection;
+    final text = textEditingValue.text;
+    if (selection.isCollapsed) {
+      return;
+    }
+    Clipboard.setData(ClipboardData(text: selection.textInside(text)));
+    _replaceText(ReplaceTextIntent(textEditingValue, '', selection, cause));
 
     if (cause == SelectionChangedCause.toolbar) {
       bringIntoView(textEditingValue.selection.extent);
@@ -150,7 +175,7 @@ class QuillRawEditorState extends EditorState
   /// Paste text from [Clipboard].
   @override
   Future<void> pasteText(SelectionChangedCause cause) async {
-    if (controller.readOnly) {
+    if (widget.configurations.readOnly) {
       return;
     }
 
@@ -179,59 +204,39 @@ class QuillRawEditorState extends EditorState
       return;
     }
 
-    if (await controller.clipboardPaste()) {
-      bringIntoView(textEditingValue.selection.extent);
+    final selection = textEditingValue.selection;
+    if (!selection.isValid) {
       return;
     }
 
-    final clipboard = SystemClipboard.instance;
 
-    final onImagePaste = widget.configurations.onImagePaste;
-    if (onImagePaste != null) {
-      if (clipboard != null) {
-        final reader = await clipboard.read();
-        if (reader.canProvide(Formats.png)) {
-          reader.getFile(Formats.png, (value) async {
-            final image = value;
+    // Snapshot the input before using `await`.
+    // See https://github.com/flutter/flutter/issues/11427
+    final plainText = await Clipboard.getData(Clipboard.kTextPlain);
+    if (plainText != null) {
+      _replaceText(
+        ReplaceTextIntent(
+          textEditingValue,
+          plainText.text!,
+          selection,
+          cause,
+        ),
+      );
 
-            final imageUrl = await onImagePaste(await image.readAll());
-            if (imageUrl == null) {
-              return;
-            }
+      bringIntoView(textEditingValue.selection.extent);
 
-            controller.replaceText(
-              textEditingValue.selection.end,
-              0,
-              BlockEmbed.image(imageUrl),
-              null,
-            );
-          });
-        }
-      }
-    }
+      // Collapse the selection and hide the toolbar and handles.
+      userUpdateTextEditingValue(
+        TextEditingValue(
+          text: textEditingValue.text,
+          selection: TextSelection.collapsed(
+            offset: textEditingValue.selection.end,
+          ),
+        ),
+        cause,
+      );
 
-    final onGifPaste = widget.configurations.onGifPaste;
-    if (onGifPaste != null) {
-      if (clipboard != null) {
-        final reader = await clipboard.read();
-        if (reader.canProvide(Formats.gif)) {
-          reader.getFile(Formats.gif, (value) async {
-            final gif = value;
-
-            final gifUrl = await onGifPaste(await gif.readAll());
-            if (gifUrl == null) {
-              return;
-            }
-
-            controller.replaceText(
-              textEditingValue.selection.end,
-              0,
-              BlockEmbed.image(gifUrl),
-              null,
-            );
-          });
-        }
-      }
+      return;
     }
   }
 
@@ -908,8 +913,7 @@ class QuillRawEditorState extends EditorState
   void _handleCheckboxTap(int offset, bool value) {
     final requestKeyboardFocusOnCheckListChanged =
         widget.configurations.requestKeyboardFocusOnCheckListChanged;
-    if (!(widget.configurations.checkBoxReadOnly ??
-        widget.configurations.readOnly)) {
+    if (!widget.configurations.readOnly) {
       _disableScrollControllerAnimateOnce = true;
       final currentSelection = controller.selection.copyWith();
       final attribute = value ? Attribute.checked : Attribute.unchecked;
@@ -985,7 +989,6 @@ class QuillRawEditorState extends EditorState
           clearIndents: clearIndents,
           onCheckboxTap: _handleCheckboxTap,
           readOnly: widget.configurations.readOnly,
-          checkBoxReadOnly: widget.configurations.checkBoxReadOnly,
           customStyleBuilder: widget.configurations.customStyleBuilder,
           customLinkPrefixes: widget.configurations.customLinkPrefixes,
         );
@@ -1365,7 +1368,6 @@ class QuillRawEditorState extends EditorState
 
   void _handleFocusChanged() {
     if (dirty) {
-      requestKeyboard();
       SchedulerBinding.instance
           .addPostFrameCallback((_) => _handleFocusChanged());
       return;

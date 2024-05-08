@@ -26,12 +26,6 @@ class FlutterQuillLocalizationsEn extends FlutterQuillLocalizations {
   String get copy => 'Copy';
 
   @override
-  String get cut => 'Cut';
-
-  @override
-  String get paste => 'Paste';
-
-  @override
   String get remove => 'Remove';
 
   @override
@@ -134,7 +128,7 @@ class FlutterQuillLocalizationsEn extends FlutterQuillLocalizations {
   String get alignRight => 'Align right';
 
   @override
-  String get justifyWinWidth => 'Justify';
+  String get justifyWinWidth => 'Justify win width';
 
   @override
   String get textDirection => 'Text direction';
@@ -225,11 +219,6 @@ class FlutterQuillLocalizationsEn extends FlutterQuillLocalizations {
 
   @override
   String get savedUsingLocalStorage => 'Saved using the local storage';
-
-  @override
-  String theImageHasBeenSavedAt(String imagePath) {
-    return 'The image has been saved at: $imagePath';
-  }
 
   @override
   String get errorWhileSavingImage => 'Error while saving image';
@@ -408,7 +397,7 @@ class FlutterQuillLocalizationsEnUs extends FlutterQuillLocalizationsEn {
   String get alignRight => 'Align right';
 
   @override
-  String get justifyWinWidth => 'Justify';
+  String get justifyWinWidth => 'Justify win width';
 
   @override
   String get textDirection => 'Text direction';

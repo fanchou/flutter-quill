@@ -362,7 +362,7 @@ base class Line extends QuillContainer<Leaf?> {
     void handle(Style style) {
       for (final attr in result.values) {
         if (!style.containsKey(attr.key) ||
-            (style.attributes[attr.key]?.value != attr.value)) {
+            (style.attributes[attr.key] != attr.value)) {
           excluded.add(attr);
         }
       }
@@ -390,7 +390,6 @@ base class Line extends QuillContainer<Leaf?> {
     final remaining = len - local;
     if (remaining > 0 && nextLine != null) {
       final rest = nextLine!.collectStyle(0, remaining);
-      result = result.mergeAll(rest);
       handle(rest);
     }
 
@@ -407,20 +406,20 @@ base class Line extends QuillContainer<Leaf?> {
     final data = queryChild(offset, true);
     var node = data.node as Leaf?;
     if (node != null) {
-      var pos = math.min(local, node.length - data.offset);
+      var pos = 0;
+      pos = node.length - data.offset;
       if (node is QuillText && node.style.isNotEmpty) {
-        result.add(OffsetValue(beg, node.style, pos));
+        result.add(OffsetValue(beg, node.style, node.length));
       } else if (node.value is Embeddable) {
-        result.add(OffsetValue(beg, node.value as Embeddable, pos));
+        result.add(OffsetValue(beg, node.value as Embeddable, node.length));
       }
-
       while (!node!.isLast && pos < local) {
         node = node.next as Leaf;
-        final span = math.min(local - pos, node.length);
         if (node is QuillText && node.style.isNotEmpty) {
-          result.add(OffsetValue(pos + beg, node.style, span));
+          result.add(OffsetValue(pos + beg, node.style, node.length));
         } else if (node.value is Embeddable) {
-          result.add(OffsetValue(pos + beg, node.value as Embeddable, span));
+          result.add(
+              OffsetValue(pos + beg, node.value as Embeddable, node.length));
         }
         pos += node.length;
       }
