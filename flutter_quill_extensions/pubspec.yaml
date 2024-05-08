@@ -36,6 +36,8 @@ dependencies:
   cross_file: ^0.3.3+6
 
   flutter_quill:
+    git:
+      url: https://github.com/fanchou/flutter-quill
   photo_view: ^0.14.0
 
   # Plugins
